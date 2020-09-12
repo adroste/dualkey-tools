@@ -1,0 +1,546 @@
+{
+    "title": "Dualkey Anti RSI",
+    "rules": [
+        {
+            "description": "Enter to Enter if pressed alone, Control (right) on hold",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "return_or_enter",
+                        "modifiers": {
+                            "optional": [
+                                "any"
+                            ]
+                        }
+                    },
+                    "to": [
+                        {
+                            "key_code": "right_control"
+                        }
+                    ],
+                    "to_if_alone": [
+                        {
+                            "key_code": "return_or_enter"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "description": "Caps Lock to Escape if pressed alone, Control (left) on hold",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "caps_lock",
+                        "modifiers": {
+                            "optional": [
+                                "any"
+                            ]
+                        }
+                    },
+                    "to": [
+                        {
+                            "key_code": "left_control"
+                        }
+                    ],
+                    "to_if_alone": [
+                        {
+                            "key_code": "escape"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "description": "Control (Left) to Caps Lock if pressed alone, Control (left) on hold",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "left_control",
+                        "modifiers": {
+                            "optional": [
+                                "any"
+                            ]
+                        }
+                    },
+                    "to": [
+                        {
+                            "key_code": "left_control"
+                        }
+                    ],
+                    "to_if_alone": [
+                        {
+                            "key_code": "caps_lock",
+                            "hold_down_milliseconds": 500
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "description": "Shift keys to Parentheses if pressed alone, Shift on hold",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "left_shift"
+                    },
+                    "to": [
+                        {
+                            "key_code": "left_shift"
+                        }
+                    ],
+                    "to_if_alone": [
+                        {
+                            "key_code": "9",
+                            "modifiers": [
+                                "left_shift"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "right_shift"
+                    },
+                    "to": [
+                        {
+                            "key_code": "right_shift"
+                        }
+                    ],
+                    "to_if_alone": [
+                        {
+                            "key_code": "0",
+                            "modifiers": [
+                                "right_shift"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "left_shift",
+                        "modifiers": {
+                            "mandatory": [
+                                "right_shift"
+                            ]
+                        }
+                    },
+                    "to": [
+                        {
+                            "key_code": "left_shift"
+                        }
+                    ],
+                    "to_if_alone": [
+                        {
+                            "key_code": "0",
+                            "modifiers": [
+                                "right_shift",
+                                "left_shift"
+                            ]
+                        },
+                        {
+                            "key_code": "9",
+                            "modifiers": [
+                                "right_shift",
+                                "left_shift"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "right_shift",
+                        "modifiers": {
+                            "mandatory": [
+                                "left_shift"
+                            ]
+                        }
+                    },
+                    "to": [
+                        {
+                            "key_code": "right_shift"
+                        }
+                    ],
+                    "to_if_alone": [
+                        {
+                            "key_code": "9",
+                            "modifiers": [
+                                "left_shift",
+                                "right_shift"
+                            ]
+                        },
+                        {
+                            "key_code": "0",
+                            "modifiers": [
+                                "left_shift",
+                                "right_shift"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "description": "Extra ISO key as dead key for German symbols",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "a"
+                    },
+                    "conditions": [
+                        {
+                            "type": "variable_if",
+                            "name": "german_deadkey_pressed",
+                            "value": 1
+                        }
+                    ],
+                    "to": [
+                        {
+                            "key_code": "u",
+                            "modifiers": [
+                                "left_option"
+                            ]
+                        },
+                        {
+                            "key_code": "a"
+                        },
+                        {
+                            "set_variable": {
+                                "name": "german_deadkey_pressed",
+                                "value": 0
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "a",
+                        "modifiers": {
+                            "mandatory": [
+                                "shift"
+                            ]
+                        }
+                    },
+                    "conditions": [
+                        {
+                            "type": "variable_if",
+                            "name": "german_deadkey_pressed",
+                            "value": 1
+                        }
+                    ],
+                    "to": [
+                        {
+                            "key_code": "u",
+                            "modifiers": [
+                                "left_option"
+                            ]
+                        },
+                        {
+                            "key_code": "a",
+                            "modifiers": [
+                                "left_shift"
+                            ]
+                        },
+                        {
+                            "set_variable": {
+                                "name": "german_deadkey_pressed",
+                                "value": 0
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "o"
+                    },
+                    "conditions": [
+                        {
+                            "type": "variable_if",
+                            "name": "german_deadkey_pressed",
+                            "value": 1
+                        }
+                    ],
+                    "to": [
+                        {
+                            "key_code": "u",
+                            "modifiers": [
+                                "left_option"
+                            ]
+                        },
+                        {
+                            "key_code": "o"
+                        },
+                        {
+                            "set_variable": {
+                                "name": "german_deadkey_pressed",
+                                "value": 0
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "o",
+                        "modifiers": {
+                            "mandatory": [
+                                "shift"
+                            ]
+                        }
+                    },
+                    "conditions": [
+                        {
+                            "type": "variable_if",
+                            "name": "german_deadkey_pressed",
+                            "value": 1
+                        }
+                    ],
+                    "to": [
+                        {
+                            "key_code": "u",
+                            "modifiers": [
+                                "left_option"
+                            ]
+                        },
+                        {
+                            "key_code": "o",
+                            "modifiers": [
+                                "left_shift"
+                            ]
+                        },
+                        {
+                            "set_variable": {
+                                "name": "german_deadkey_pressed",
+                                "value": 0
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "u"
+                    },
+                    "conditions": [
+                        {
+                            "type": "variable_if",
+                            "name": "german_deadkey_pressed",
+                            "value": 1
+                        }
+                    ],
+                    "to": [
+                        {
+                            "key_code": "u",
+                            "modifiers": [
+                                "left_option"
+                            ]
+                        },
+                        {
+                            "key_code": "u"
+                        },
+                        {
+                            "set_variable": {
+                                "name": "german_deadkey_pressed",
+                                "value": 0
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "u",
+                        "modifiers": {
+                            "mandatory": [
+                                "shift"
+                            ]
+                        }
+                    },
+                    "conditions": [
+                        {
+                            "type": "variable_if",
+                            "name": "german_deadkey_pressed",
+                            "value": 1
+                        }
+                    ],
+                    "to": [
+                        {
+                            "key_code": "u",
+                            "modifiers": [
+                                "left_option"
+                            ]
+                        },
+                        {
+                            "key_code": "u",
+                            "modifiers": [
+                                "left_shift"
+                            ]
+                        },
+                        {
+                            "set_variable": {
+                                "name": "german_deadkey_pressed",
+                                "value": 0
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "s"
+                    },
+                    "conditions": [
+                        {
+                            "type": "variable_if",
+                            "name": "german_deadkey_pressed",
+                            "value": 1
+                        }
+                    ],
+                    "to": [
+                        {
+                            "key_code": "s",
+                            "modifiers": [
+                                "left_option"
+                            ]
+                        },
+                        {
+                            "set_variable": {
+                                "name": "german_deadkey_pressed",
+                                "value": 0
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "4",
+                        "modifiers": {
+                            "mandatory": [
+                                "shift"
+                            ]
+                        }
+                    },
+                    "conditions": [
+                        {
+                            "type": "variable_if",
+                            "name": "german_deadkey_pressed",
+                            "value": 1
+                        }
+                    ],
+                    "to": [
+                        {
+                            "key_code": "2",
+                            "modifiers": [
+                                "left_option",
+                                "left_shift"
+                            ]
+                        },
+                        {
+                            "set_variable": {
+                                "name": "german_deadkey_pressed",
+                                "value": 0
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "basic",
+                    "from": {
+                        "any": "key_code",
+                        "modifiers": {
+                            "optional": [
+                                "any"
+                            ]
+                        }
+                    },
+                    "conditions": [
+                        {
+                            "type": "variable_if",
+                            "name": "german_deadkey_pressed",
+                            "value": 1
+                        }
+                    ],
+                    "to": [
+                        {
+                            "key_code": "grave_accent_and_tilde"
+                        },
+                        {
+                            "set_variable": {
+                                "name": "german_deadkey_pressed",
+                                "value": 0
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "grave_accent_and_tilde",
+                        "modifiers": {
+                            "optional": [
+                                "left_shift",
+                                "right_shift"
+                            ]
+                        }
+                    },
+                    "to": [
+                        {
+                            "set_variable": {
+                                "name": "german_deadkey_pressed",
+                                "value": 1
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "description": "[Layout specific] Swap grave/tilde with extra iso key",
+            "manipulators": [
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "grave_accent_and_tilde",
+                        "modifiers": {
+                            "optional": [
+                                "any"
+                            ]
+                        }
+                    },
+                    "to": [
+                        {
+                            "key_code": "non_us_backslash"
+                        }
+                    ]
+                },
+                {
+                    "type": "basic",
+                    "from": {
+                        "key_code": "non_us_backslash",
+                        "modifiers": {
+                            "optional": [
+                                "any"
+                            ]
+                        }
+                    },
+                    "to": [
+                        {
+                            "key_code": "grave_accent_and_tilde"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
