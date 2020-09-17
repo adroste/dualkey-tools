@@ -1,10 +1,10 @@
 [Unit]
-Description=udevmon
+Description=dualkey-tools
 Wants=systemd-udev-settle.service
 After=systemd-udev-settle.service
 
 [Service]
-ExecStart=/usr/bin/nice -n -20 /usr/local/bin/udevmon -c /etc/udevmon.yaml
+ExecStart=/usr/bin/nice -n -20 /usr/local/bin/dualkey-tools -r /etc/dualkey-tools/rules.yaml
 
 [Install]
 WantedBy=multi-user.target

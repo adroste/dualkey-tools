@@ -15,7 +15,8 @@ const struct input_event SYN_EVENT = { .type = EV_SYN, .code = SYN_REPORT, .valu
 
 class LinuxKeyHook : public IKeyHook {
 public:
-    bool hookSync(IKeyEventHandler* pHandler);
+    bool hookSync(IKeyEventHandler& handler);
+    void abort();
 
 private:
     bool init();

@@ -1,86 +1,82 @@
+#include <iostream>
 #include <memory>
-#include <stdio.h>
+#include <signal.h>
 #include <vector>
 
+#include "./lib/ConfigLoader.h"
+#include "./lib/handler/HandlerComposer.h"
+#include "./lib/handler/OutputKeyCodeHandler.h"
 #include "./lib/hooks/LinuxKeyHook.h"
-#include "./lib/ModifierState.h"
-#include "./lib/handler/DeadKeyHandler.h"
-#include "./lib/handler/DualKeyHandler.h"
-#include "./lib/handler/DebugKeyHandler.h"
 
-/*
- * Pre-defined key handler instances
- */
-DebugKeyHandler debugKeyHandler; 
+LinuxKeyHook keyHook;
 
-DeadKeyHandler deadKeyGermanHandler(
-    KeyCode::ISO_EXTRA,
-    GERMAN_SYMBOLS);
-
-DualKeyHandler capsLockToEscAndCtrl(
-    KeyCode::CAPS_LOCK,
-    { KeyCode::ESC },
-    { KeyCode::CTRL_LEFT },
-    {});
-
-DualKeyHandler ctrlToCapsLockAndCtrl(
-    KeyCode::CTRL_LEFT,
-    { KeyCode::CAPS_LOCK },
-    { KeyCode::CTRL_LEFT },
-    {});
-
-DualKeyHandler enterToEnterAndCtrl(
-    KeyCode::ENTER,
-    { KeyCode::ENTER },
-    { KeyCode::CTRL_RIGHT },
-    {});
-
-DualKeyHandler shiftLeftToLeftParenthesesAndShiftLeft(
-    KeyCode::SHIFT_LEFT,
-    { KeyCode::SHIFT_LEFT, KeyCode::N9 },
-    { KeyCode::SHIFT_LEFT },
-    { KeyCode::SHIFT_RIGHT });
-
-DualKeyHandler shiftRightToRightParenthesesAndShiftRight(
-    KeyCode::SHIFT_RIGHT,
-    { KeyCode::SHIFT_RIGHT, KeyCode::N0 },
-    { KeyCode::SHIFT_RIGHT },
-    { KeyCode::SHIFT_LEFT });
-
-int main(void)
+void sigIntHandler(int)
 {
-    // TODO mutex
+    std::cout << "\nStopped by user..." << std::endl;
+    keyHook.abort();
+    exit(0);
+}
+
+void showUsage()
+{
+    std::cout
+        << "Usage: dualkey-tools [OPTION]...\n"
+        << "Options:\n"
+        << "\t-h,--help\t\tShow this help message\n"
+        << "\t-r,--rules FILE (yaml)\tSpecify the rules file. Defaults to rules.yaml\n"
+        << "\t-t,--test\t\tTest mode. Useful for figuring out keycodes.\n"
+        << "\nYou should run this tool with the highest process priority possible.\n"
+        << ">> Unix: sudo nice -n -20 ./dualkey-tools"
+        << std::endl;
+}
+
+int main(int argc, char* argv[])
+{
+    // TODO mutex / only allow one app instance
+    // dev note: mutex is not needed in linux
+    // because app will close because input device
+    // cannot be grabbed a second time
+    signal(SIGINT, sigIntHandler);
 
     setbuf(stdin, NULL), setbuf(stdout, NULL);
 
-    LinuxKeyHook keyHook;
+    auto rulesFile = "rules.yaml";
+    bool testMode = false;
+    for (int i = 1; i < argc; ++i) {
+        std::string arg = argv[i];
+        if ((arg == "-h") || (arg == "--help")) {
+            showUsage();
+            return 0;
+        } else if ((arg == "-r") || (arg == "--rules")) {
+            if (i + 1 < argc) {
+                rulesFile = argv[++i];
+            } else {
+                std::cerr << "-r,--rules option requires one argument." << std::endl;
+                showUsage();
+                return 1;
+            }
+        } else if ((arg == "-t") || (arg == "--test")) {
+            testMode = true;
+        } else {
+            std::cerr << "unknown option: " << arg << std::endl;
+            showUsage();
+            return 1;
+        }
+    }
 
-    std::vector<IKeyEventHandler*> handler;
-    handler.push_back(&capsLockToEscAndCtrl);
-    handler.push_back(&enterToEnterAndCtrl);
-    handler.push_back(&ctrlToCapsLockAndCtrl);
-    handler.push_back(&deadKeyGermanHandler);
-    handler.push_back(&shiftLeftToLeftParenthesesAndShiftLeft);
-    handler.push_back(&shiftRightToRightParenthesesAndShiftRight);
+    try {
+        if (testMode) {
+            std::cout << "TEST MODE - use CTRL + C to quit" << std::endl;
+            OutputKeyCodeHandler testHandler;
+            keyHook.hookSync(testHandler);
+        } else {
+            auto composed = ConfigLoader::loadRulesFile(rulesFile);
+            keyHook.hookSync(composed);
+        }
+    } catch (const std::exception& e) {
+        printf("%s\n", e.what());
+        return 1;
+    }
 
-    keyHook.hookSync(&debugKeyHandler);
-
-    /* bool handled; */
-    /* ModifierFlags modifierFlags; */
-    /* while (interceptor.readEvent(p_input)) { */
-    /*     handled = false; */
-    /*     modifierState.update(*p_input); */
-    /*     modifierFlags = modifierState.getModifierFlags(); */
-
-    /*     // order = priority */
-    /*     for (auto& h : handler) */
-    /*         handled |= h->handleEvent(handled, *p_input, modifierFlags, outputs); */
-    /*     // forward unhandled input */
-    /*     // DO NOT REMOVE or your keyboard will not work anymore */
-    /*     if (!handled) */
-    /*         outputs.push_back(*p_input); */
-
-    /*     interceptor.writeEvents(outputs); */
-    /*     outputs.clear(); */
-    /* } */
+    return 0;
 }

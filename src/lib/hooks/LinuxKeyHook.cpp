@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-bool LinuxKeyHook::hookSync(IKeyEventHandler* pHandler)
+bool LinuxKeyHook::hookSync(IKeyEventHandler& handler)
 {
     if (!init()) {
         clearHook();
@@ -26,7 +26,7 @@ bool LinuxKeyHook::hookSync(IKeyEventHandler* pHandler)
         modifierState.update(*pInp);
         modifierFlags = modifierState.getModifierFlags();
 
-        if (!pHandler->handleEvent(false, *pInp, modifierFlags, outputs))
+        if (!handler.handleEvent(false, *pInp, modifierFlags, outputs))
             // forward unhandled input
             // DO NOT REMOVE or your keyboard will not work anymore
             outputs.push_back(*pInp);
@@ -38,6 +38,10 @@ bool LinuxKeyHook::hookSync(IKeyEventHandler* pHandler)
 
     clearHook();
     return false;
+}
+
+void LinuxKeyHook::abort() {
+    clearHook();
 }
 
 int LinuxKeyHook::readEvent(std::unique_ptr<InputEvent>& p_input)

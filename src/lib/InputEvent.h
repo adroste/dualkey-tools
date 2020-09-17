@@ -8,20 +8,9 @@ public:
     KeyCode keyCode;
     KeyState keyState;
 
-    InputEvent(KeyCode keyCode, KeyState keyState)
-        : keyCode(keyCode)
-        , keyState(keyState)
-    {
-    }
+    InputEvent(KeyCode keyCode, KeyState keyState);
 
-    bool isDown() const
-    {
-        return keyState == KeyState::DOWN
-            || keyState == KeyState::REPEAT;
-    }
+    bool isDown() const;
 
-    bool isUp() const
-    {
-        return keyState == KeyState::UP;
-    }
+    bool isUp() const;
 };

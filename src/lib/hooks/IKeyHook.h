@@ -4,6 +4,6 @@
 
 class IKeyHook {
 public:
-    virtual bool hookSync(IKeyEventHandler* pHandler) = 0;
-    virtual void clearHook() = 0;
+    virtual bool hookSync(IKeyEventHandler& handler) = 0;
+    virtual void abort() = 0;
 };

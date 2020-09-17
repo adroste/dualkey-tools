@@ -1,0 +1,126 @@
+# Get key codes by using TEST MODE: sudo ./dualkey-tools -t
+# or look at the documentation:
+# linux: https://github.com/torvalds/linux/blob/master/include/uapi/linux/input-event-codes.h
+# windows: https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+
+# Order determines priority of rules
+- title: 'Enter to Right-CTRL on hold'
+  enabled: true
+  type: dualkey
+  options:
+    triggerKey: 28 # Enter
+    tapKeySequence: [[28]] # Enter
+    holdKeys: [97] # Right-CTRL
+    ignoredKeys: [] # no keys ignored
+
+- title: 'Caps-Lock to ESC on tap, Left-CTRL on hold'
+  enabled: true
+  type: dualkey
+  options:
+    triggerKey: 58 # Caps-Lock
+    tapKeySequence: [[1]] # ESC
+    holdKeys: [29] # Left-CTRL
+    ignoredKeys: [] # no keys ignored
+
+- title: 'Left-CTRL to Caps-Lock on tap'
+  enabled: true
+  type: dualkey
+  options:
+    triggerKey: 29 # Left-CTRL
+    tapKeySequence: [[58]] # Caps-Lock
+    holdKeys: [29] # Left-CTRL
+    ignoredKeys: [] # no keys ignored
+
+# The following deadkey rule must have a higher priority
+#   than the that following shift dualkey rules 
+#   (and therefore be defined before them)
+#   because the shift dualkey rules would clash with the
+#   insert sequence triggers (e.g. Shift+A)
+#
+# KNOWN BUGS:
+#   Insert does not work when Caps-Lock is active
+#   because CTRL+Shift+U will not enter unicode mode
+#   on linux while Caps-Lock is enabled
+# Workaround: 
+#   instead of CTRL+Shift+U rewrite symbols
+#   to use the compose key
+- title: 'Extra ISO key to German dead key'
+  type: deadkey
+  enabled: true
+  options:
+    deadKey: 86 # 102ND / Extra ISO key
+    symbols:
+      - triggerKey: 30 # A
+        modifier: [[Shift]]
+        keySequence: [
+          [29,42,22], # CTRL + Shift + U
+          [46],[5],   # C, 4 = A Umlaut
+          [57]        # Space
+          ]
+      - triggerKey: 30 # A
+        modifier: [[None]]
+        keySequence: [
+          [29,42,22], # CTRL + Shift + U
+          [18],[5],   # E, 4 = a Umlaut
+          [57]        # Space
+          ]
+      - triggerKey: 24 # O
+        modifier: [[Shift]]
+        keySequence: [
+          [29,42,22], # CTRL + Shift + U
+          [32],[7],   # D, 6 = O Umlaut
+          [57]        # Space
+          ]
+      - triggerKey: 24 # O
+        modifier: [[None]]
+        keySequence: [
+          [29,42,22], # CTRL + Shift + U
+          [33],[7],   # F, 6 = o Umlaut
+          [57]        # Space
+          ]
+      - triggerKey: 22 # U
+        modifier: [[Shift]]
+        keySequence: [
+          [29,42,22], # CTRL + Shift + U
+          [32],[46],  # D, C = O Umlaut
+          [57]        # Space
+          ]
+      - triggerKey: 22 # U
+        modifier: [[None]]
+        keySequence: [
+          [29,42,22], # CTRL + Shift + U
+          [33],[46],  # F, C = o Umlaut
+          [57]        # Space
+          ]
+      - triggerKey: 31 # S
+        modifier: [[None]]
+        keySequence: [
+          [29,42,22], # CTRL + Shift + U
+          [32],[33],  # D, F = sharp s
+          [57]        # Space
+          ]
+      - triggerKey: 5 # 4/$-Sign
+        modifier: [[Shift]]
+        keySequence: [
+          [29,42,22],           # CTRL + Shift + U
+          [3],[11],[30],[46],   # 2, 0, A, C = euro sign
+          [57]                  # Space
+          ]
+
+- title: 'Left-Shift to Left-Parenthesis (Shift+9) on tap'
+  enabled: true
+  type: dualkey
+  options:
+    triggerKey: 42 # Left-Shift
+    tapKeySequence: [[42, 10]] # Left-Shift+9
+    holdKeys: [42] # Left-Shift
+    ignoredKeys: [54] # ignored Right-Shift for key roll
+
+- title: 'Right-Shift to Right-Parenthesis (Shift+0) on tap'
+  enabled: true
+  type: dualkey
+  options:
+    triggerKey: 54 # Right-Shift
+    tapKeySequence: [[54, 11]] # Right-Shift+0
+    holdKeys: [54] # Right-Shift
+    ignoredKeys: [42] # ignored Left-Shift for key roll

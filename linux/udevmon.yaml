@@ -1,4 +1,0 @@
-- JOB: "intercept -g $DEVNODE | dualkey-anti-rsi | uinput -d $DEVNODE"
-  DEVICE:
-    EVENTS:
-      EV_KEY: [KEY_CAPSLOCK, KEY_LEFTCTRL, KEY_ENTER, KEY_LEFTSHIFT, KEY_RIGHTSHIFT]
